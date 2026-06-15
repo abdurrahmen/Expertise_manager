@@ -24,6 +24,7 @@ class VesselDetailPage extends StatefulWidget {
 class _VesselDetailPageState extends State<VesselDetailPage> {
   int _statusFilter = 0; // 0: Tous, 1: En attente, 2: Trouvés
   int _expectedAncienne = 0;
+  final _searchCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -32,12 +33,54 @@ class _VesselDetailPageState extends State<VesselDetailPage> {
   }
 
   @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  Widget _highlightText(String text, String query) {
+    if (query.isEmpty || !text.toLowerCase().contains(query.toLowerCase())) {
+      return Text(text, style: AppTypography.body14.copyWith(color: AppColors.textPrimary));
+    }
+    final matches = query.toLowerCase().allMatches(text.toLowerCase());
+    List<TextSpan> spans = [];
+    int start = 0;
+    for (var match in matches) {
+      if (match.start > start) {
+        spans.add(TextSpan(text: text.substring(start, match.start)));
+      }
+      spans.add(TextSpan(
+        text: text.substring(match.start, match.end),
+        style: const TextStyle(backgroundColor: Color(0xFFFFF176), color: Colors.black, fontWeight: FontWeight.bold),
+      ));
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(text: text.substring(start)));
+    }
+    return RichText(
+      text: TextSpan(style: AppTypography.body14.copyWith(color: AppColors.textPrimary), children: spans),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final query = _searchCtrl.text.toLowerCase();
     List<Vehicle> displayedVehicles = widget.vessel.vehicles;
+
+    // Apply status filter
     if (_statusFilter == 1) {
       displayedVehicles = displayedVehicles.where((v) => v.status == VehicleStatus.enAttente).toList();
     } else if (_statusFilter == 2) {
       displayedVehicles = displayedVehicles.where((v) => v.status == VehicleStatus.trouve).toList();
+    }
+
+    // Apply search filter
+    if (query.isNotEmpty) {
+      displayedVehicles = displayedVehicles.where((v) => 
+        v.vin.toLowerCase().contains(query) || 
+        v.model.toLowerCase().contains(query)
+      ).toList();
     }
 
     return Scaffold(
@@ -115,7 +158,11 @@ class _VesselDetailPageState extends State<VesselDetailPage> {
             padding: const EdgeInsets.all(AppSpacing.base),
             child: Column(
               children: [
-                PSSearchBar(hint: 'Rechercher par VIN ou Modèle'),
+                PSSearchBar(
+                  controller: _searchCtrl,
+                  hint: 'Rechercher par VIN ou Modèle',
+                  onChanged: (v) => setState(() {}),
+                ),
                 const SizedBox(height: AppSpacing.base),
                 SizedBox(
                   height: 32,
@@ -152,9 +199,9 @@ class _VesselDetailPageState extends State<VesselDetailPage> {
                   },
                   title: Row(
                     children: [
-                      PSVinDisplay(vin: v.vin, isSmall: true),
+                      PSVinDisplay(vin: v.vin, isSmall: true, query: _searchCtrl.text),
                       const SizedBox(width: AppSpacing.sm),
-                      Text(v.model, style: AppTypography.body14.copyWith(color: AppColors.textPrimary)),
+                      Expanded(child: _highlightText(v.model, _searchCtrl.text)),
                     ],
                   ),
                   subtitle: v.status == VehicleStatus.trouve && v.foundByName != null
@@ -184,6 +231,7 @@ class _VesselDetailPageState extends State<VesselDetailPage> {
       ),
     );
   }
+
 
   Widget _buildFilterChip(int index, String label) {
     return PSChip(

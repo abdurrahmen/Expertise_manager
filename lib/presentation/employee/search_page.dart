@@ -20,19 +20,74 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   int _activeFilter = 0; // 0: Assigned, 1: Tous, 2: En attente, 3: Trouvés
+  final _searchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  Widget _highlightText(String text, String query) {
+    if (query.isEmpty || !text.toLowerCase().contains(query.toLowerCase())) {
+      return Text(text, style: AppTypography.body14.copyWith(color: AppColors.textPrimary), maxLines: 1, overflow: TextOverflow.ellipsis);
+    }
+
+    final matches = query.toLowerCase().allMatches(text.toLowerCase());
+    if (matches.isEmpty) {
+      return Text(text, style: AppTypography.body14.copyWith(color: AppColors.textPrimary), maxLines: 1, overflow: TextOverflow.ellipsis);
+    }
+
+    List<TextSpan> spans = [];
+    int start = 0;
+    for (var match in matches) {
+      if (match.start > start) {
+        spans.add(TextSpan(text: text.substring(start, match.start)));
+      }
+      spans.add(TextSpan(
+        text: text.substring(match.start, match.end),
+        style: const TextStyle(backgroundColor: Color(0xFFFFF176), color: Colors.black, fontWeight: FontWeight.bold),
+      ));
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(text: text.substring(start)));
+    }
+
+    return RichText(
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        style: AppTypography.body14.copyWith(color: AppColors.textPrimary),
+        children: spans,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final employee = MockData.members[1];
+    final query = _searchCtrl.text.toLowerCase();
+    
     List<Vehicle> allVehicules = MockData.vessels.expand((v) => v.vehicles).toList();
 
     List<Vehicle> displayed = allVehicules;
+    
+    // Apply status/category filter
     if (_activeFilter == 0) {
       displayed = allVehicules.where((v) => employee.categoryIds.contains(v.categoryId)).toList();
     } else if (_activeFilter == 2) {
       displayed = allVehicules.where((v) => v.status == VehicleStatus.enAttente).toList();
     } else if (_activeFilter == 3) {
       displayed = allVehicules.where((v) => v.status == VehicleStatus.trouve).toList();
+    }
+
+    // Apply search filter
+    if (query.isNotEmpty) {
+      displayed = displayed.where((v) => 
+        v.vin.toLowerCase().contains(query) || 
+        v.model.toLowerCase().contains(query)
+      ).toList();
     }
 
     // Group by vessel
@@ -54,7 +109,11 @@ class _SearchPageState extends State<SearchPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PSSearchBar(hint: 'Rechercher un VIN ou Modèle'),
+                PSSearchBar(
+                  controller: _searchCtrl,
+                  hint: 'Rechercher un VIN ou Modèle',
+                  onChanged: (v) => setState(() {}),
+                ),
                 const SizedBox(height: AppSpacing.base),
                 SizedBox(
                   height: 32,
@@ -110,9 +169,9 @@ class _SearchPageState extends State<SearchPage> {
                             ListTile(
                               title: Row(
                                 children: [
-                                  PSVinDisplay(vin: v.vin, isSmall: true),
+                                  PSVinDisplay(vin: v.vin, isSmall: true, query: _searchCtrl.text),
                                   const SizedBox(width: AppSpacing.sm),
-                                  Expanded(child: Text(v.model, style: AppTypography.body14.copyWith(color: AppColors.textPrimary), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                  Expanded(child: _highlightText(v.model, _searchCtrl.text)),
                                 ],
                               ),
                               trailing: Row(
@@ -143,6 +202,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
 
   Widget _buildFilter(int index, String label) {
     return PSChip(
