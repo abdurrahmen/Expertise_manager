@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
 /// Progress indicators (spec §5, §8) — linear bar and circular ring.

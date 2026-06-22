@@ -36,17 +36,20 @@ class _BossShellState extends State<BossShell> {
 
     return PSAdaptiveNav(
       items: const [
-        PSNavItem(icon: LucideIcons.layoutDashboard, label: 'Tableau de bord'),
-        PSNavItem(icon: LucideIcons.ship, label: 'Navires'),
-        PSNavItem(icon: LucideIcons.sparkles, label: 'Importer'),
-        PSNavItem(icon: LucideIcons.users, label: 'Équipe'),
-        PSNavItem(icon: LucideIcons.fileText, label: 'Rapports'),
-        PSNavItem(icon: LucideIcons.settings, label: 'Paramètres'),
+        PSNavItem(icon: LucideIcons.layoutDashboard, label: 'Tableau de bord', section: 'Principal'),
+        PSNavItem(icon: LucideIcons.ship, label: 'Navires', section: 'Flotte'),
+        PSNavItem(icon: LucideIcons.sparkles, label: 'Importer', section: 'Outils'),
+        PSNavItem(icon: LucideIcons.users, label: 'Équipe', section: 'Management'),
+        PSNavItem(icon: LucideIcons.fileText, label: 'Rapports', section: 'Management'),
+        PSNavItem(icon: LucideIcons.settings, label: 'Paramètres', section: 'Système'),
       ],
       currentIndex: _currentIndex,
       onIndexChanged: (i) => setState(() => _currentIndex = i),
       userName: boss.name,
       roleLabel: 'Administrateur',
+      onLogout: () {
+        Navigator.of(context).pushReplacementNamed('/');
+      },
       body: _pages[_currentIndex],
     );
   }

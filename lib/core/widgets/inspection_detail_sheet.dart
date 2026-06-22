@@ -3,7 +3,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
-import 'ps_app_bar.dart';
 import 'ps_chip.dart';
 import 'ps_vin_display.dart';
 import '../../data/models.dart';

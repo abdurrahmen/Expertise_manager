@@ -41,6 +41,14 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    console.log('index.html: script started');
+  </script>
+  <script src="flutter_bootstrap.js" async onhashchange="console.log('index.html: flutter_bootstrap.js loaded')" onerror="console.error('index.html: failed to load flutter_bootstrap.js')"></script>
+  <script>
+    window.addEventListener('load', function() {
+      console.log('index.html: page fully loaded');
+    });
+  </script>
 </body>
 </html>

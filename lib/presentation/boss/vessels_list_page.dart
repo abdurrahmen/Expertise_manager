@@ -9,7 +9,9 @@ import '../../core/widgets/ps_button.dart';
 import '../../core/widgets/ps_card.dart';
 import '../../core/widgets/ps_chip.dart';
 import '../../core/widgets/ps_progress.dart';
+import '../../core/widgets/ps_input.dart';
 import '../../data/mock_data.dart';
+import '../../data/models.dart';
 import 'vessel_detail_page.dart';
 
 class VesselsListPage extends StatefulWidget {

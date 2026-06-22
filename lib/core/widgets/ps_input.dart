@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
@@ -21,6 +20,10 @@ class PSInput extends StatelessWidget {
     this.onChanged,
     this.errorText,
     this.enabled = true,
+    this.maxLength,
+    this.style,
+    this.prefixIcon,
+    this.suffixIcon,
   });
 
   final TextEditingController? controller;
@@ -36,6 +39,10 @@ class PSInput extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final bool enabled;
+  final int? maxLength;
+  final TextStyle? style;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +64,23 @@ class PSInput extends StatelessWidget {
           keyboardType: keyboardType,
           onChanged: onChanged,
           enabled: enabled,
-          style: isVin
+          maxLength: maxLength,
+          style: style ?? (isVin
               ? AppTypography.mono15.copyWith(color: AppColors.textPrimary)
-              : AppTypography.body15.copyWith(color: AppColors.textPrimary),
+              : AppTypography.body15.copyWith(color: AppColors.textPrimary)),
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
             fillColor: isVin ? AppColors.background : AppColors.surface,
-            prefixIcon: leadingIcon != null
+            prefixIcon: prefixIcon ?? (leadingIcon != null
                 ? Icon(leadingIcon, size: 20, color: AppColors.textMuted)
-                : null,
-            suffixIcon: trailingIcon != null
+                : null),
+            suffixIcon: suffixIcon ?? (trailingIcon != null
                 ? IconButton(
                     icon: Icon(trailingIcon, size: 20, color: AppColors.textMuted),
                     onPressed: onTrailingTap,
                   )
-                : null,
+                : null),
             errorText: errorText,
             errorStyle: AppTypography.body12.copyWith(color: AppColors.error),
             contentPadding: const EdgeInsets.symmetric(

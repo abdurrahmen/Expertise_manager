@@ -4,7 +4,7 @@ import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
 /// Status badge / chip (spec §8).
-enum PSChipVariant { success, warning, error, category, filter, vehicleRecente, vehicleAncienne }
+enum PSChipVariant { success, warning, error, category, filter, vehicleRecente, vehicleAncienne, primary, secondary }
 
 class PSChip extends StatelessWidget {
   const PSChip({
@@ -40,6 +40,10 @@ class PSChip extends StatelessWidget {
         return AppColors.vehicleRecenteBg;
       case PSChipVariant.vehicleAncienne:
         return AppColors.vehicleAncienneBg;
+      case PSChipVariant.primary:
+        return AppColors.primarySubtle;
+      case PSChipVariant.secondary:
+        return const Color(0xFFF5F3FF); // Violet subtle
     }
   }
 
@@ -59,6 +63,10 @@ class PSChip extends StatelessWidget {
         return AppColors.vehicleRecenteText;
       case PSChipVariant.vehicleAncienne:
         return AppColors.vehicleAncienneText;
+      case PSChipVariant.primary:
+        return AppColors.primary;
+      case PSChipVariant.secondary:
+        return const Color(0xFF7C3AED); // Violet text
     }
   }
 

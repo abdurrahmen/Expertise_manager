@@ -10,19 +10,21 @@ class PSCard extends StatelessWidget {
     this.padding,
     this.onTap,
     this.color,
+    this.backgroundColor,
   });
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
   final Color? color;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final card = Container(
       padding: padding ?? const EdgeInsets.all(AppSpacing.base),
       decoration: BoxDecoration(
-        color: color ?? AppColors.surface,
+        color: backgroundColor ?? color ?? AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: AppColors.border),
       ),

@@ -154,11 +154,57 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
                 ],
               ),
               const SizedBox(height: AppSpacing.xxl),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Photos additionnelles', style: AppTypography.label.copyWith(color: AppColors.textSecondary)),
+                  TextButton.icon(
+                    icon: const Icon(LucideIcons.plus, size: 16),
+                    label: const Text('Ajouter'),
+                    onPressed: () {
+                      setState(() {
+                        final id = 'Extra ${takenPhotos.where((p) => p.startsWith('Extra')).length + 1}';
+                        takenPhotos.add(id);
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              if (takenPhotos.where((p) => p.startsWith('Extra')).isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
+                    border: Border.all(color: AppColors.border, style: BorderStyle.solid),
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(LucideIcons.imagePlus, size: 32, color: AppColors.textMuted),
+                      const SizedBox(height: AppSpacing.md),
+                      Text('Aucune photo additionnelle', style: AppTypography.body13.copyWith(color: AppColors.textMuted)),
+                    ],
+                  ),
+                )
+              else
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: AppSpacing.md,
+                  crossAxisSpacing: AppSpacing.md,
+                  childAspectRatio: 1.2,
+                  children: takenPhotos.where((p) => p.startsWith('Extra')).map((p) => _buildPhotoTile(p, LucideIcons.camera, isExtra: true)).toList(),
+                ),
+
+              const SizedBox(height: AppSpacing.xxl),
               const PSInput(
                 label: 'Observations',
                 hint: 'Observations, état du véhicule...',
                 maxLines: 4,
               ),
+
               const SizedBox(height: AppSpacing.xxxl),
               SizedBox(
                 height: AppSpacing.fabHeight,
@@ -205,13 +251,16 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
     );
   }
 
-  Widget _buildPhotoTile(String label, IconData icon) {
+  Widget _buildPhotoTile(String label, IconData icon, {bool isExtra = false}) {
     final isTaken = takenPhotos.contains(label);
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (isTaken) takenPhotos.remove(label);
-          else takenPhotos.add(label);
+          if (isTaken) {
+            if (!isExtra) takenPhotos.remove(label);
+          } else {
+            takenPhotos.add(label);
+          }
         });
       },
       child: Container(
@@ -220,7 +269,7 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
           borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
           border: isTaken
               ? Border.all(color: AppColors.primary)
-              : Border.all(color: AppColors.border, style: BorderStyle.solid), // Should be dashed for empty
+              : Border.all(color: AppColors.border, style: BorderStyle.solid), 
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -237,10 +286,25 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
               Positioned(
                 top: 8,
                 right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  child: Icon(LucideIcons.checkCircle2, size: 20, color: AppColors.success),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isExtra)
+                      GestureDetector(
+                        onTap: () => setState(() => takenPhotos.remove(label)),
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          child: const Icon(LucideIcons.trash2, size: 16, color: AppColors.error),
+                        ),
+                      ),
+                    const SizedBox(width: 4),
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                      child: const Icon(LucideIcons.checkCircle2, size: 20, color: AppColors.success),
+                    ),
+                  ],
                 ),
               ),
           ],
@@ -248,4 +312,5 @@ class _NewInspectionPageState extends State<NewInspectionPage> {
       ),
     );
   }
+
 }

@@ -7,6 +7,7 @@ import '../../core/widgets/ps_app_bar.dart';
 import '../../core/widgets/ps_button.dart';
 import '../../core/widgets/ps_card.dart';
 import '../../core/widgets/ps_chip.dart';
+import '../../core/widgets/ps_input.dart';
 import '../../data/mock_data.dart';
 import '../../data/models.dart';
 
@@ -52,8 +53,64 @@ class TeamCategoriesPage extends StatelessWidget {
   }
 }
 
-class _CategoriesTab extends StatelessWidget {
+class _CategoriesTab extends StatefulWidget {
   const _CategoriesTab();
+
+  @override
+  State<_CategoriesTab> createState() => _CategoriesTabState();
+}
+
+class _CategoriesTabState extends State<_CategoriesTab> {
+  void _showCategoryDialog([VehicleCategory? category]) {
+    final nameCtrl = TextEditingController(text: category?.name);
+    int selectedColor = category?.colorIndex ?? 0;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(category == null ? 'Nouvelle catégorie' : 'Modifier la catégorie', style: AppTypography.heading18),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PSInput(controller: nameCtrl, label: 'Nom de la catégorie', hint: 'ex: Berline, SUV...'),
+              const SizedBox(height: AppSpacing.md),
+              Text('Couleur', style: AppTypography.label.copyWith(color: AppColors.textSecondary)),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () => setDialogState(() => selectedColor = index),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.getCategoryBg(index),
+                        shape: BoxShape.circle,
+                        border: selectedColor == index ? Border.all(color: AppColors.primary, width: 2) : null,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+            PSButton(
+              label: 'Enregistrer',
+              isSmall: true,
+              onPressed: () {
+                // Logic to save
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +125,7 @@ class _CategoriesTab extends StatelessWidget {
             child: PSButton(
               label: 'Nouvelle catégorie',
               icon: LucideIcons.plus,
-              onPressed: () {},
+              onPressed: () => _showCategoryDialog(),
             ),
           );
         }
@@ -96,7 +153,7 @@ class _CategoriesTab extends StatelessWidget {
                         Text(cat.name, style: AppTypography.heading18.copyWith(color: AppColors.textPrimary)),
                       ],
                     ),
-                    IconButton(icon: const Icon(LucideIcons.pencil, size: 18), onPressed: () {}),
+                    IconButton(icon: const Icon(LucideIcons.pencil, size: 18), onPressed: () => _showCategoryDialog(cat)),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -120,8 +177,48 @@ class _CategoriesTab extends StatelessWidget {
   }
 }
 
-class _TeamTab extends StatelessWidget {
+class _TeamTab extends StatefulWidget {
   const _TeamTab();
+
+  @override
+  State<_TeamTab> createState() => _TeamTabState();
+}
+
+class _TeamTabState extends State<_TeamTab> {
+  void _showAddMemberDialog() {
+    final nameCtrl = TextEditingController();
+    final emailCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Ajouter un membre', style: AppTypography.heading18),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PSInput(controller: nameCtrl, label: 'Nom complet', hint: 'Jean Dupont'),
+            const SizedBox(height: AppSpacing.md),
+            PSInput(controller: emailCtrl, label: 'Email', hint: 'jean@example.com', keyboardType: TextInputType.emailAddress),
+            const SizedBox(height: AppSpacing.md),
+            Text('Assigner des catégories', style: AppTypography.label.copyWith(color: AppColors.textSecondary)),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: 8,
+              children: MockData.categories.map((c) => PSChip(label: c.name, variant: PSChipVariant.filter)).toList(),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+          PSButton(
+            label: 'Inviter',
+            isSmall: true,
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +233,7 @@ class _TeamTab extends StatelessWidget {
             child: PSButton(
               label: 'Ajouter un membre',
               icon: LucideIcons.plus,
-              onPressed: () {},
+              onPressed: _showAddMemberDialog,
             ),
           );
         }
@@ -199,3 +296,5 @@ class _TeamTab extends StatelessWidget {
     );
   }
 }
+
+

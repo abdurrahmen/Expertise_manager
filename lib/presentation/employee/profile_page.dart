@@ -7,7 +7,6 @@ import '../../core/widgets/ps_app_bar.dart';
 import '../../core/widgets/ps_card.dart';
 import '../../core/widgets/ps_chip.dart';
 import '../../data/mock_data.dart';
-import '../../data/models.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

@@ -20,18 +20,18 @@ class OfflineBanner extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(LucideIcons.wifiOff, size: 16, color: AppColors.darkBackground),
+            const Icon(LucideIcons.wifiOff, size: 16, color: AppColors.textPrimary),
             const SizedBox(width: 8),
             Text(
               'Mode hors ligne engagé',
-              style: AppTypography.label.copyWith(color: AppColors.darkBackground),
+              style: AppTypography.label.copyWith(color: AppColors.textPrimary),
             ),
             if (pendingCount > 0) ...[
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.darkBackground,
+                  color: AppColors.textPrimary,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(

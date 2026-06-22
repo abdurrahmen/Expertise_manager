@@ -10,11 +10,66 @@ import '../../core/widgets/ps_input.dart';
 import '../../core/widgets/ps_vin_display.dart';
 import '../../data/mock_data.dart';
 
-class ReportsPage extends StatelessWidget {
+import 'package:share_plus/share_plus.dart';
+
+class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
 
   @override
+  State<ReportsPage> createState() => _ReportsPageState();
+}
+
+class _ReportsPageState extends State<ReportsPage> {
+  final _searchCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  void _shareReport() {
+    Share.share('Exportation des rapports de PortScan - ${DateTime.now()}');
+  }
+
+  Widget _highlightText(String text, String query) {
+    if (query.isEmpty || !text.toLowerCase().contains(query.toLowerCase())) {
+      return Text(text, style: AppTypography.body14.copyWith(color: AppColors.textPrimary));
+    }
+    final matches = query.toLowerCase().allMatches(text.toLowerCase());
+    List<TextSpan> spans = [];
+    int start = 0;
+    for (var match in matches) {
+      if (match.start > start) {
+        spans.add(TextSpan(text: text.substring(start, match.start)));
+      }
+      spans.add(TextSpan(
+        text: text.substring(match.start, match.end),
+        style: const TextStyle(backgroundColor: Color(0xFFFFF176), color: Colors.black, fontWeight: FontWeight.bold),
+      ));
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(text: text.substring(start)));
+    }
+    return RichText(
+      text: TextSpan(style: AppTypography.body14.copyWith(color: AppColors.textPrimary), children: spans),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final query = _searchCtrl.text.toLowerCase();
+    var filtered = MockData.inspections;
+    if (query.isNotEmpty) {
+      filtered = filtered.where((insp) => 
+        (insp.vin?.toLowerCase().contains(query) ?? false) ||
+        insp.memberName.toLowerCase().contains(query) ||
+        insp.vesselName.toLowerCase().contains(query) ||
+        (insp.model?.toLowerCase().contains(query) ?? false)
+      ).toList();
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: PSAppBar(
@@ -22,7 +77,7 @@ class ReportsPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.share2),
-            onPressed: () {},
+            onPressed: _shareReport,
           ),
         ],
       ),
@@ -32,7 +87,11 @@ class ReportsPage extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.base),
             child: Column(
               children: [
-                PSSearchBar(hint: 'Rechercher par VIN, employé, navire...'),
+                PSSearchBar(
+                  controller: _searchCtrl,
+                  hint: 'Rechercher par VIN, employé, navire...',
+                  onChanged: (v) => setState(() {}),
+                ),
                 const SizedBox(height: AppSpacing.base),
                 SizedBox(
                   height: 32,
@@ -56,10 +115,10 @@ class ReportsPage extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.base),
-              itemCount: MockData.inspections.length,
+              itemCount: filtered.length,
               separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.base),
               itemBuilder: (context, index) {
-                final insp = MockData.inspections[index];
+                final insp = filtered[index];
                 return PSCard(
                   padding: EdgeInsets.zero,
                   child: Padding(
@@ -69,7 +128,7 @@ class ReportsPage extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            if (insp.vin != null) PSVinDisplay(vin: insp.vin!, isSmall: true) else Text('Véhicule ancien', style: AppTypography.label.copyWith(color: AppColors.textPrimary)),
+                            if (insp.vin != null) PSVinDisplay(vin: insp.vin!, isSmall: true, query: _searchCtrl.text) else Text('Véhicule ancien', style: AppTypography.label.copyWith(color: AppColors.textPrimary)),
                             const Spacer(),
                             Text(insp.timestamp, style: AppTypography.body12.copyWith(color: AppColors.textSecondary)),
                           ],
@@ -77,7 +136,7 @@ class ReportsPage extends StatelessWidget {
                         const SizedBox(height: AppSpacing.md),
                         Row(
                           children: [
-                            Text(insp.model ?? '', style: AppTypography.body14.copyWith(color: AppColors.textPrimary)),
+                            Expanded(child: _highlightText(insp.model ?? '', _searchCtrl.text)),
                             const SizedBox(width: AppSpacing.sm),
                             if (insp.categoryName != null)
                               PSChip(label: insp.categoryName!, variant: PSChipVariant.category, categoryIndex: insp.categoryIndex ?? 0),
@@ -104,11 +163,11 @@ class ReportsPage extends StatelessWidget {
                           children: [
                             Icon(LucideIcons.userCircle, size: 16, color: AppColors.textSecondary),
                             const SizedBox(width: AppSpacing.xs),
-                            Text(insp.memberName, style: AppTypography.body13.copyWith(color: AppColors.textSecondary)),
-                            const Spacer(),
+                            Expanded(child: _highlightText(insp.memberName, _searchCtrl.text)),
+                            const SizedBox(width: AppSpacing.md),
                             Icon(LucideIcons.ship, size: 16, color: AppColors.textSecondary),
                             const SizedBox(width: AppSpacing.xs),
-                            Text(insp.vesselName, style: AppTypography.body13.copyWith(color: AppColors.textSecondary)),
+                            Expanded(child: _highlightText(insp.vesselName, _searchCtrl.text)),
                           ],
                         ),
                         if (insp.notes != null) ...[
@@ -127,3 +186,4 @@ class ReportsPage extends StatelessWidget {
     );
   }
 }
+

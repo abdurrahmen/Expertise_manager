@@ -11,12 +11,14 @@ class PSAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showBack = false,
     this.actions,
     this.onBack,
+    this.onBackOverride,
   });
 
   final String title;
   final bool showBack;
   final List<Widget>? actions;
   final VoidCallback? onBack;
+  final VoidCallback? onBackOverride;
 
   @override
   Size get preferredSize => const Size.fromHeight(AppSpacing.appBarHeight);
@@ -31,7 +33,7 @@ class PSAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showBack
           ? IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-              onPressed: onBack ?? () => Navigator.of(context).pop(),
+              onPressed: onBackOverride ?? onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
       automaticallyImplyLeading: false,

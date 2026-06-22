@@ -33,6 +33,8 @@ migrate_working_dir/
 /build/
 /coverage/
 
+prompt_may_need.md
+
 # Symbolication related
 app.*.symbols
 

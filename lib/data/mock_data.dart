@@ -27,28 +27,32 @@ class MockData {
     Member(id: 'm5', name: 'Ismaël Bennacer', role: UserRole.employee, avatarColorIndex: 4, categoryIds: ['c2', 'c5'], todayCount: 7, weekCount: 31, monthCount: 105),
   ];
 
-  static final vessels = [
-    Vessel(
-      id: 'v1', name: 'MSC Fantasia', totalRecente: 45, foundRecente: 32,
-      expectedAncienne: 10, foundAncienne: 6, status: 'actif',
-      vehicles: _generateVehicles('v1', 'MSC Fantasia', 45),
-    ),
-    Vessel(
-      id: 'v2', name: 'CMA CGM Marco Polo', totalRecente: 30, foundRecente: 28,
-      expectedAncienne: 8, foundAncienne: 8, status: 'actif',
-      vehicles: _generateVehicles('v2', 'CMA CGM Marco Polo', 30),
-    ),
-    Vessel(
-      id: 'v3', name: 'Maersk Sealand', totalRecente: 20, foundRecente: 20,
-      expectedAncienne: 5, foundAncienne: 5, status: 'terminé',
-      vehicles: _generateVehicles('v3', 'Maersk Sealand', 20),
-    ),
-    Vessel(
-      id: 'v4', name: 'Evergreen Atlas', totalRecente: 15, foundRecente: 3,
-      expectedAncienne: 4, foundAncienne: 1, status: 'actif',
-      vehicles: _generateVehicles('v4', 'Evergreen Atlas', 15),
-    ),
-  ];
+  static List<Vessel>? _vessels;
+  static List<Vessel> get vessels {
+    _vessels ??= [
+      Vessel(
+        id: 'v1', name: 'MSC Fantasia', totalRecente: 45, foundRecente: 32,
+        expectedAncienne: 10, foundAncienne: 6, status: 'actif',
+        vehicles: _generateVehicles('v1', 'MSC Fantasia', 45),
+      ),
+      Vessel(
+        id: 'v2', name: 'CMA CGM Marco Polo', totalRecente: 30, foundRecente: 28,
+        expectedAncienne: 8, foundAncienne: 8, status: 'actif',
+        vehicles: _generateVehicles('v2', 'CMA CGM Marco Polo', 30),
+      ),
+      Vessel(
+        id: 'v3', name: 'Maersk Sealand', totalRecente: 20, foundRecente: 20,
+        expectedAncienne: 5, foundAncienne: 5, status: 'terminé',
+        vehicles: _generateVehicles('v3', 'Maersk Sealand', 20),
+      ),
+      Vessel(
+        id: 'v4', name: 'Evergreen Atlas', totalRecente: 15, foundRecente: 3,
+        expectedAncienne: 4, foundAncienne: 1, status: 'actif',
+        vehicles: _generateVehicles('v4', 'Evergreen Atlas', 15),
+      ),
+    ];
+    return _vessels!;
+  }
 
   static List<Vehicle> _generateVehicles(String vesselId, String vesselName, int count) {
     final models = ['Toyota Corolla', 'Hyundai Tucson', 'Renault Clio', 'Peugeot 3008', 'Kia Sportage', 'VW Golf', 'Dacia Duster', 'Ford Ranger'];
@@ -94,4 +98,39 @@ class MockData {
   // Weekly inspection counts for line chart (7 days)
   static const weeklyInspections = [12, 18, 15, 22, 19, 25, 14];
   static const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+  static final reserveItems = [
+    ReserveItem(
+      id: 'r1',
+      vin: 'JTDKN3DU5A0200',
+      model: 'Toyota Corolla',
+      categoryId: 'c1',
+      employeeId: 'm2',
+      employeeName: 'Yacine Adli',
+      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+      status: 'captured',
+    ),
+    ReserveItem(
+      id: 'r2',
+      vin: 'WVWZZZ3CZW0201',
+      model: 'Hyundai Tucson',
+      categoryId: 'c2',
+      employeeId: 'm3',
+      employeeName: 'Samir Nasri',
+      timestamp: DateTime.now().subtract(const Duration(hours: 5)),
+      status: 'matched',
+      linkedVesselName: 'MSC Fantasia',
+    ),
+    ReserveItem(
+      id: 'r3',
+      vin: 'VF1RFB00X5202',
+      model: 'Renault Clio',
+      categoryId: 'c1',
+      employeeId: 'm4',
+      employeeName: 'Riyad Mahrez',
+      timestamp: DateTime.now().subtract(const Duration(days: 1)),
+      status: 'done',
+      linkedVesselName: 'CMA CGM Marco Polo',
+    ),
+  ];
 }

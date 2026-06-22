@@ -1,8 +1,35 @@
 /// PortScan data models.
+library models;
 
 enum UserRole { boss, employee }
 enum VehicleType { recente, ancienne }
-enum VehicleStatus { enAttente, trouve, horsListe }
+enum VehicleStatus { enAttente, trouve, fait, capture, horsListe }
+
+class ReserveItem {
+  final String id;
+  final String vin;
+  final String? model;
+  final String categoryId;
+  final String employeeId;
+  final String employeeName;
+  final DateTime timestamp;
+  final String status; // "captured", "matched", "done"
+  final String? linkedVesselName;
+  final String? notes;
+
+  ReserveItem({
+    required this.id,
+    required this.vin,
+    this.model,
+    required this.categoryId,
+    required this.employeeId,
+    required this.employeeName,
+    required this.timestamp,
+    this.status = 'captured',
+    this.linkedVesselName,
+    this.notes,
+  });
+}
 
 class Company {
   final String id;

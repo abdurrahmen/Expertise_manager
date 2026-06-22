@@ -23,9 +23,52 @@ class AppTheme {
         onError: Colors.white,
         outline: AppColors.border,
       ),
-      textTheme: GoogleFonts.interTextTheme().apply(
-        bodyColor: AppColors.textPrimary,
-        displayColor: AppColors.textPrimary,
+      textTheme: GoogleFonts.interTextTheme().copyWith(
+        displayLarge: GoogleFonts.plusJakartaSans(
+          fontSize: 32,
+          fontWeight: FontWeight.w800,
+          color: AppColors.textPrimary,
+        ),
+        displayMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary,
+        ),
+        displaySmall: GoogleFonts.plusJakartaSans(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        headlineMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        titleMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        bodyLarge: GoogleFonts.inter(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textPrimary,
+        ),
+        bodyMedium: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textPrimary,
+        ),
+        bodySmall: GoogleFonts.inter(
+          fontSize: 13,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textSecondary,
+        ),
+        labelLarge: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.surface,

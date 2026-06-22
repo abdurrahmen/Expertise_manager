@@ -9,31 +9,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.6
 
   # Typography
-  google_fonts: ^6.2.1
-
-  # Icons
-  # Charts
-  fl_chart: ^0.70.2
-
-  # Animations
+  google_fonts: ^8.1.0
+  fl_chart: ^1.2.0
   flutter_animate: ^4.5.2
-
-  # Skeleton loaders
   shimmer: ^3.0.0
-
-  # Share / Export
-  share_plus: ^10.1.4
-
-  # Toast notifications
-  toastification: ^2.3.0
+  share_plus: ^13.1.0
+  toastification: ^3.2.0
   lucide_icons_flutter: ^3.1.14+2
+  syncfusion_flutter_charts: ^33.2.13
+  smooth_page_indicator: ^2.0.1
+  phosphor_flutter: ^2.1.0
+  supabase_flutter: 2.14.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true

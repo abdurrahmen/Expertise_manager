@@ -10,6 +10,7 @@ import '../../core/widgets/ps_button.dart';
 import '../../core/widgets/ps_card.dart';
 import '../../data/mock_data.dart';
 import 'new_inspection_page.dart';
+import 'pre_capture_page.dart';
 
 class EmployeeHomePage extends StatelessWidget {
   const EmployeeHomePage({super.key});
@@ -95,6 +96,18 @@ class EmployeeHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => const NewInspectionPage(),
+                  fullscreenDialog: true,
+                ));
+              },
+            ),
+            const SizedBox(height: AppSpacing.md),
+            PSButton(
+              label: 'Pré-capturer un véhicule',
+              icon: LucideIcons.archive,
+              variant: PSButtonVariant.secondary,
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const PreCapturePage(),
                   fullscreenDialog: true,
                 ));
               },

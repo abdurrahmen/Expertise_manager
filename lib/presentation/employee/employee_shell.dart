@@ -8,6 +8,7 @@ import 'history_page.dart';
 import 'new_inspection_page.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
+import 'my_reserve_page.dart';
 
 class EmployeeShell extends StatefulWidget {
   const EmployeeShell({super.key});
@@ -22,6 +23,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
   final List<Widget> _pages = [
     const EmployeeHomePage(),
     const SearchPage(),
+    const MyReservePage(),
     const HistoryPage(),
     const ProfilePage(),
   ];
@@ -32,15 +34,20 @@ class _EmployeeShellState extends State<EmployeeShell> {
 
     return PSAdaptiveNav(
       items: const [
-        PSNavItem(icon: LucideIcons.home, label: 'Accueil'),
-        PSNavItem(icon: LucideIcons.search, label: 'Rechercher'),
-        PSNavItem(icon: LucideIcons.history, label: 'Historique'),
-        PSNavItem(icon: LucideIcons.userCircle, label: 'Profil'),
+        PSNavItem(icon: LucideIcons.home, label: 'Accueil', section: 'Principal'),
+        PSNavItem(icon: LucideIcons.search, label: 'Rechercher', section: 'Principal'),
+        PSNavItem(icon: LucideIcons.archive, label: 'Ma Réserve', section: 'Inspections'),
+        PSNavItem(icon: LucideIcons.history, label: 'Historique', section: 'Inspections'),
+        PSNavItem(icon: LucideIcons.userCircle, label: 'Profil', section: 'Compte'),
       ],
       currentIndex: _currentIndex,
       onIndexChanged: (i) => setState(() => _currentIndex = i),
       userName: employee.name,
       roleLabel: 'Employé(e)',
+      onLogout: () {
+        // Clear local state if needed and return to welcome
+        Navigator.of(context).pushReplacementNamed('/');
+      },
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(

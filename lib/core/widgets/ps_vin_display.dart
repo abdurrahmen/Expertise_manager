@@ -39,10 +39,10 @@ class PSVinDisplay extends StatelessWidget {
           spans.add(TextSpan(text: vin.substring(start, match.start)));
         }
         spans.add(TextSpan(
-          text: vin.substring(match.match.start, match.match.end),
+          text: vin.substring(match.start, match.end),
           style: const TextStyle(backgroundColor: Color(0xFFFFF176), color: Colors.black, fontWeight: FontWeight.bold),
         ));
-        start = match.match.end;
+        start = match.end;
       }
       if (start < vin.length) {
         spans.add(TextSpan(text: vin.substring(start)));

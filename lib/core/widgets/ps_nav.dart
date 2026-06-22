@@ -7,7 +7,8 @@ import '../theme/app_typography.dart';
 class PSNavItem {
   final IconData icon;
   final String label;
-  const PSNavItem({required this.icon, required this.label});
+  final String? section; // Added section support
+  const PSNavItem({required this.icon, required this.label, this.section});
 }
 
 /// Adaptive navigation — bottom nav (<600px), nav rail (600–1024px),
@@ -22,6 +23,7 @@ class PSAdaptiveNav extends StatelessWidget {
     this.roleLabel,
     this.userName,
     this.floatingActionButton,
+    this.onLogout, // New logout support
   });
 
   final List<PSNavItem> items;
@@ -31,6 +33,7 @@ class PSAdaptiveNav extends StatelessWidget {
   final String? roleLabel;
   final String? userName;
   final Widget? floatingActionButton;
+  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +108,13 @@ class PSAdaptiveNav extends StatelessWidget {
   Widget _buildWithNavRail(BuildContext context, {required bool expanded}) {
     final railWidth = expanded ? AppSpacing.navRailExpandedWidth : AppSpacing.navRailWidth;
 
+    // Group items by section
+    final Map<String?, List<int>> groups = {};
+    for (int i = 0; i < items.length; i++) {
+        final section = items[i].section;
+        groups.putIfAbsent(section, () => []).add(i);
+    }
+
     return Scaffold(
       floatingActionButton: floatingActionButton,
       body: Row(
@@ -126,19 +136,50 @@ class PSAdaptiveNav extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 const SizedBox(height: 8),
-                // Nav items
+                // Nav items grouped by sections
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    children: List.generate(items.length, (i) {
-                      return _NavRailItem(
-                        icon: items[i].icon,
-                        label: items[i].label,
-                        isActive: i == currentIndex,
-                        expanded: expanded,
-                        onTap: () => onIndexChanged(i),
-                      );
-                    }),
+                    children: [
+                      for (final entry in groups.entries) ...[
+                        if (entry.key != null && expanded)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+                            child: Text(
+                              entry.key!.toUpperCase(),
+                              style: AppTypography.body12.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          )
+                        else if (entry.key != null && !expanded)
+                          const Divider(height: 32, indent: 16, endIndent: 16),
+                        
+                        for (final i in entry.value)
+                          _NavRailItem(
+                            icon: items[i].icon,
+                            label: items[i].label,
+                            isActive: i == currentIndex,
+                            expanded: expanded,
+                            onTap: () => onIndexChanged(i),
+                          ),
+                      ],
+                      // Logout as a secondary item
+                      if (onLogout != null) ...[
+                        const Divider(height: 32, indent: 16, endIndent: 16),
+                        _NavRailItem(
+                          icon: Icons.logout_rounded,
+                          label: 'Déconnexion',
+                          isActive: false,
+                          expanded: expanded,
+                          onTap: onLogout!,
+                          isDestructive: true,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ],
                   ),
                 ),
                 // User section
@@ -184,6 +225,7 @@ class _NavRailItem extends StatelessWidget {
     required this.isActive,
     required this.expanded,
     required this.onTap,
+    this.isDestructive = false,
   });
 
   final IconData icon;
@@ -191,9 +233,14 @@ class _NavRailItem extends StatelessWidget {
   final bool isActive;
   final bool expanded;
   final VoidCallback onTap;
+  final bool isDestructive;
 
   @override
   Widget build(BuildContext context) {
+    final color = isDestructive 
+        ? Colors.red.shade400 
+        : (isActive ? AppColors.primary : AppColors.textSecondary);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Material(
@@ -202,7 +249,7 @@ class _NavRailItem extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppSpacing.radiusButton),
-          hoverColor: AppColors.primarySubtle,
+          hoverColor: isDestructive ? Colors.red.withOpacity(0.05) : AppColors.primarySubtle,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.symmetric(
@@ -216,14 +263,14 @@ class _NavRailItem extends StatelessWidget {
             child: expanded
                 ? Row(
                     children: [
-                      Icon(icon, size: 22, color: isActive ? AppColors.primary : AppColors.textSecondary),
+                      Icon(icon, size: 22, color: color),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           label,
                           style: AppTypography.body14.copyWith(
-                            color: isActive ? AppColors.primary : AppColors.textSecondary,
-                            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                            color: color,
+                            fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -234,7 +281,7 @@ class _NavRailItem extends StatelessWidget {
                 : Center(
                     child: Tooltip(
                       message: label,
-                      child: Icon(icon, size: 22, color: isActive ? AppColors.primary : AppColors.textSecondary),
+                      child: Icon(icon, size: 22, color: color),
                     ),
                   ),
           ),
