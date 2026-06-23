@@ -12,6 +12,7 @@ import '../../core/widgets/ps_chip.dart';
 import '../../core/widgets/ps_vin_display.dart';
 import '../../data/mock_data.dart';
 import 'la_reserve_page.dart';
+import '../../features/import/screens/import_screen.dart';
 
 class BossDashboardPage extends StatelessWidget {
   const BossDashboardPage({super.key});
@@ -106,7 +107,9 @@ class BossDashboardPage extends StatelessWidget {
                 PSButton(label: 'La Réserve', icon: LucideIcons.archive, variant: PSButtonVariant.secondary, onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LaReservePage()));
                 }),
-                PSButton(label: 'Importer', icon: LucideIcons.sparkles, variant: PSButtonVariant.secondary, onPressed: () {}),
+                PSButton(label: 'Importer', icon: LucideIcons.sparkles, variant: PSButtonVariant.secondary, onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const ImportScreen()));
+                }),
                 PSButton(label: 'Nouveau navire', icon: LucideIcons.ship, variant: PSButtonVariant.secondary, onPressed: () {}),
                 PSButton(label: 'Équipe & Catégories', icon: LucideIcons.users, variant: PSButtonVariant.secondary, onPressed: () {}),
               ],

@@ -33,6 +33,10 @@ migrate_working_dir/
 /build/
 /coverage/
 
+.env
+.env.local
+PROJECT_STATE.md
+
 prompt_may_need.md
 
 # Symbolication related

@@ -8,6 +8,7 @@ import 'reports_page.dart';
 import 'settings_page.dart';
 import 'team_categories_page.dart';
 import 'vessels_list_page.dart';
+import '../../features/import/screens/import_screen.dart';
 
 /// Boss shell with adaptive navigation.
 class BossShell extends StatefulWidget {
@@ -23,7 +24,7 @@ class _BossShellState extends State<BossShell> {
   final List<Widget> _pages = [
     const BossDashboardPage(),
     const VesselsListPage(),
-    const AIImportPage(),
+    const ImportScreen(),
     const TeamCategoriesPage(),
     const ReportsPage(),
     const SettingsPage(),

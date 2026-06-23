@@ -16,13 +16,21 @@ dependencies:
   fl_chart: ^1.2.0
   flutter_animate: ^4.5.2
   shimmer: ^3.0.0
-  share_plus: ^13.1.0
+  share_plus: ^12.0.2
   toastification: ^3.2.0
   lucide_icons_flutter: ^3.1.14+2
   syncfusion_flutter_charts: ^33.2.13
   smooth_page_indicator: ^2.0.1
   phosphor_flutter: ^2.1.0
   supabase_flutter: 2.14.1
+  flutter_dotenv: ^5.1.0
+  file_picker: ^8.0.0
+  pdfx: ^2.5.0
+  flutter_image_compress: ^2.1.0
+  flutter_riverpod: ^2.5.1
+  http: ^1.2.1
+  intl: ^0.19.0
+  path_provider: ^2.1.3
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +39,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - .env.local

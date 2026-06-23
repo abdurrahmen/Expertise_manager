@@ -11,6 +11,8 @@ import '../../core/widgets/ps_input.dart';
 import '../../core/widgets/ps_progress.dart';
 import '../../core/widgets/ps_vin_display.dart';
 import '../../data/models.dart';
+import '../boss/boss_dashboard_page.dart'; // For other refs if needed
+import '../../features/import/screens/import_screen.dart';
 
 class VesselDetailPage extends StatefulWidget {
   const VesselDetailPage({super.key, required this.vessel});
@@ -92,6 +94,13 @@ class _VesselDetailPageState extends State<VesselDetailPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: PSButton(label: 'Ajouter', icon: LucideIcons.plus, isSmall: true, onPressed: () {}),
+          ),
+          IconButton(
+            icon: const Icon(LucideIcons.moreVertical),
+            onPressed: () {
+              // Show simple menu or just navigate for now as per prompt "overflow menu -> 'Importer des VINs'"
+              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const ImportScreen()));
+            },
           ),
         ],
       ),
